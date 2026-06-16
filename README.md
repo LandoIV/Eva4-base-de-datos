@@ -238,5 +238,3 @@ Además, se revisaron los registros de Ubuntu y MongoDB para comprobar eventos d
 ## Conclusión
 
 El proyecto permitió construir una base técnica sólida para **ComercioTech** mediante herramientas gratuitas, compatibles y adecuadas para un entorno académico. La combinación de **Ubuntu Server**, **MongoDB** y **VirtualBox** permitió implementar una solución funcional con medidas básicas de seguridad, separación de roles, control de acceso, respaldo y documentación.
-
-En conjunto, los avances demuestran una evolución desde el diagnóstico y la selección de entorno hasta una implementación segura y verificable, alineada con las necesidades del caso.
