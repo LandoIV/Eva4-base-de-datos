@@ -235,19 +235,6 @@ Además, se revisaron los registros de Ubuntu y MongoDB para comprobar eventos d
 
 ---
 
-## Próximos pasos sugeridos
-
-Con el entorno preparado, el proyecto queda listo para continuar con tareas como:
-
-- Creación definitiva de la base de datos operativa.
-- Desarrollo del CRUD para clientes, productos y pedidos.
-- Automatización de respaldos.
-- Pruebas de restauración.
-- Implementación de TLS en un entorno más cercano a producción.
-- Monitoreo continuo y posible replicación.
-
----
-
 ## Conclusión
 
 El proyecto permitió construir una base técnica sólida para **ComercioTech** mediante herramientas gratuitas, compatibles y adecuadas para un entorno académico. La combinación de **Ubuntu Server**, **MongoDB** y **VirtualBox** permitió implementar una solución funcional con medidas básicas de seguridad, separación de roles, control de acceso, respaldo y documentación.
