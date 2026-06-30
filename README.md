@@ -1,6 +1,8 @@
 # ComercioTech — Implementación segura de Ubuntu Server y MongoDB
 
-> Proyecto académico de **Bases de Datos No Estructuradas (TI3032)** orientado al diseño e implementación de una solución **NoSQL documental, segura y escalable** para la empresa **ComercioTech**.
+> Proyecto académico de **Bases de Datos No Estructuradas (TI3032)** — carrera de **Ingeniería en Ciberseguridad** — orientado al diseño e implementación de una solución **NoSQL documental, segura y escalable** para la empresa **ComercioTech**.
+>
+> **Integrantes:** José Villalobos, Ignacio Figueroa, Orlando Iribarren
 
 ## Descripción general
 
@@ -158,11 +160,11 @@ La máquina virtual se configuró con adaptador **NAT**, lo que permite acceso a
 
 Se aplicaron varias medidas de endurecimiento del sistema:
 
-- Uso de usuario con privilegios **sudo** en lugar de trabajar como `root`.
-- Creación de una cuenta adicional de soporte.
-- Activación de **UFW** con política de entrada denegada por defecto.
-- Habilitación de **OpenSSH** como acceso remoto controlado.
-- Mantenimiento del puerto de MongoDB sin exposición externa.
+- Uso de usuario con privilegios **sudo** (`admincomercio`) en lugar de trabajar como `root`.
+- Creación de una cuenta adicional de soporte (`soporte`), agregada al grupo `sudo`.
+- Activación de **UFW** con política de entrada denegada por defecto y OpenSSH autorizado.
+- Habilitación de **OpenSSH** como acceso remoto controlado mediante `ssh.socket`.
+- Mantenimiento del puerto de MongoDB (27017) sin exposición externa.
 
 ### 5) Instalación de MongoDB
 
@@ -208,6 +210,78 @@ Además, se revisaron los registros de Ubuntu y MongoDB para comprobar eventos d
 
 ---
 
+---
+
+## Avance 3 — Modelo e implementación de la base de datos
+
+### Resumen
+
+Sobre el entorno ya asegurado (Ubuntu Server + MongoDB), se diseñó e implementó el modelo de datos definitivo para **ComercioTech**, creando la base `comercioTechDB`, sus colecciones principales y documentos de prueba que validan la estructura propuesta.
+
+### 1) Modelo de base de datos
+
+La base de datos `comercioTechDB` responde al requerimiento de registrar la información principal de una empresa de comercio: clientes registrados, productos disponibles para la venta y pedidos realizados.
+
+| Colección | Propósito | Datos principales |
+|---|---|---|
+| `clientes` | Guardar los datos personales y de contacto de los clientes. | nombre, apellido, correo, teléfono, dirección, fechaRegistro, estado |
+| `productos` | Guardar los productos disponibles en el sistema. | nombre, descripción, categoría, precio, stock, estado, fechaCreacion |
+| `pedidos` | Guardar las compras realizadas por los clientes. | clienteId, productos, cantidades, subtotales, total, estado, direccionEntrega |
+
+Estructura general del modelo:
+
+```
+comercioTechDB
+├── clientes
+├── productos
+└── pedidos
+```
+
+### 2) Creación de colecciones
+
+Se crearon las tres colecciones dentro de `comercioTechDB` mediante:
+
+```javascript
+use comercioTechDB
+db.createCollection("clientes")
+db.createCollection("productos")
+db.createCollection("pedidos")
+show collections
+```
+
+### 3) Implementación de documentos
+
+Se insertaron documentos de prueba en cada colección para validar el modelo:
+
+| Colección | Cantidad insertada | Descripción |
+|---|---|---|
+| `clientes` | 3 documentos | Clientes con datos de contacto y dirección. |
+| `productos` | 5 documentos | Productos con precio, stock, categoría y estado. |
+| `pedidos` | 3 documentos | Pedidos con cliente, productos comprados, total y estado. |
+
+### 4) Estructura de cada colección
+
+**`clientes`** — almacena información de los clientes registrados. Cada documento incluye un identificador automático (`_id`) más datos personales, contacto, dirección y estado de la cuenta.
+Campos principales: `_id`, `nombre`, `apellido`, `correo`, `telefono`, `direccion`, `fechaRegistro`, `estado`.
+
+**`productos`** — almacena los productos disponibles para la venta, con nombre, categoría, precio, stock y disponibilidad.
+Campos principales: `_id`, `nombre`, `descripcion`, `categoria`, `precio`, `stock`, `estado`, `fechaCreacion`.
+
+**`pedidos`** — almacena los pedidos realizados. Cada pedido queda asociado a un cliente mediante `clienteId` y contiene un arreglo de productos comprados, con cantidad, precio unitario y subtotal.
+Campos principales: `_id`, `clienteId`, `fechaPedido`, `productos`, `total`, `estado`, `direccionEntrega`.
+
+### 5) Verificación final
+
+Se utilizaron comandos de conteo de documentos para comprobar que la implementación fue correcta (3 clientes, 5 productos, 3 pedidos):
+
+```javascript
+db.clientes.countDocuments()
+db.productos.countDocuments()
+db.pedidos.countDocuments()
+```
+
+---
+
 ## Principales avances logrados
 
 - Se definió una arquitectura técnica coherente con el caso de estudio.
@@ -218,6 +292,8 @@ Además, se revisaron los registros de Ubuntu y MongoDB para comprobar eventos d
 - Se habilitó autenticación y control de acceso por roles.
 - Se aplicaron medidas de hardening del sistema y de la base de datos.
 - Se revisaron logs del servicio y se generó un respaldo cifrado.
+- Se diseñó e implementó el modelo de datos `comercioTechDB` con las colecciones `clientes`, `productos` y `pedidos`.
+- Se insertaron y verificaron documentos de prueba en cada colección.
 - Se documentaron procedimientos y evidencias relevantes del proceso.
 
 ---
@@ -237,4 +313,4 @@ Además, se revisaron los registros de Ubuntu y MongoDB para comprobar eventos d
 
 ## Conclusión
 
-El proyecto permitió construir una base técnica sólida para **ComercioTech** mediante herramientas gratuitas, compatibles y adecuadas para un entorno académico. La combinación de **Ubuntu Server**, **MongoDB** y **VirtualBox** permitió implementar una solución funcional con medidas básicas de seguridad, separación de roles, control de acceso, respaldo y documentación.
+El proyecto permitió construir una base técnica sólida para **ComercioTech** mediante herramientas gratuitas, compatibles y adecuadas para un entorno académico. La combinación de **Ubuntu Server**, **MongoDB** y **VirtualBox** permitió implementar una solución funcional con medidas básicas de seguridad, separación de roles, control de acceso, respaldo y documentación. Finalmente, sobre ese entorno se modeló e implementó la base de datos `comercioTechDB`, con sus colecciones de clientes, productos y pedidos, validada mediante documentos de prueba.
